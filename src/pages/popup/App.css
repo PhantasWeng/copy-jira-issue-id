@@ -1,0 +1,10 @@
+.copy-btn {
+  cursor: pointer;
+  background-color: #0077FF;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-size: 12px;
+  transform: scale(0.85);
+}
