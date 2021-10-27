@@ -21,7 +21,6 @@
   "permissions": [
     "*://*.atlassian.net/*",
 		"contextMenus",
-		"unlimitedStorage",
 		"tabs",
 		"clipboardRead",
 		"clipboardWrite"
