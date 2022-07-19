@@ -1,7 +1,15 @@
-import { clipboard } from '@extend-chrome/clipboard'
+// import { clipboard } from '@extend-chrome/clipboard'
+// const styles = `.hover-copy-btn:hover + .copy-jira-id-button {display: inline-block !important;}`
+// const stylesheet = document.createElement('style')
+// stylesheet.innerText = styles
+// document.head.appendChild(stylesheet)
+
+
 function copyToClipboard(textToCopy) {
-  clipboard.writeText(textToCopy).then((text) => {
-    console.log('clipboard contents', text)
+  navigator.clipboard.writeText(textToCopy).then(function () {
+    console.log('clipboard copy success')
+  }, function () {
+    console.log('clipboard copy failed')
   })
 }
 
@@ -15,15 +23,20 @@ function inspectLink() {
     const regex = /browse\/([a-zA-Z]+-\d+)/
     const jiraId = regex.exec(link.href)?.[1]
     if (!link.dataset.copyJiraId && link?.href?.includes('browse') && jiraId) {
+      // if (!link.className.includes('hover-copy-btn')) {
+      //   link.className = link.className + ' hover-copy-btn'
+      // }
       const button = document.createElement('button')
       button.innerHTML = copyIcon
+      button.className = 'copy-jira-id-button'
       button.style.cursor = 'pointer'
       button.style.backgroundColor = 'transparent'
       button.style.border = 'none'
-      button.style.fontSize = '14px'
-      button.style.padding = '2px 8px'
+      button.style.fontSize = '12px'
+      button.style.padding = '2px 6px'
       button.style.color = '#888'
       button.style.transition = 'color 0.6s ease'
+      // button.style.display = 'none'
 
       button.onmouseenter = () => {
         button.style.color = '#179EEF'
