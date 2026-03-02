@@ -15,104 +15,91 @@ function copyToClipboard(textToCopy) {
 
 console.log('%c[Copy Jira Id] %cInitialized', 'color: #F29D38', 'color: #9AE007')
 
-const copyIcon = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
-const checkIcon = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+const copyIcon = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+const checkIcon = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
 
 function inspectLink() {
-  const aLinkList = document.querySelectorAll('a:not([data-testid*="notification"])')
+  const aLinkList = document.querySelectorAll('a:not([data-testid*="notification"]):not([data-testid*="permalink"])')
   for (const link of aLinkList) {
     const regex = /browse\/([a-zA-Z]+-\d+)/
     const jiraId = regex.exec(link.href)?.[1]
     if (!link.dataset.copyJiraId && link?.href?.includes('browse') && jiraId) {
-      let floatingBtn = null
+      let floatingEl = null
+      let hiding = false
 
       const showButton = () => {
-        if (!floatingBtn) {
-          floatingBtn = document.createElement('button')
-          floatingBtn.innerHTML = copyIcon
-          floatingBtn.style.cssText = `
+        hiding = false
+        if (!floatingEl) {
+          floatingEl = document.createElement('div')
+          floatingEl.style.cssText = `
             position: fixed;
+            z-index: 2147483647;
+            pointer-events: auto;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+          `
+          floatingEl.innerHTML = `<div class="cjid-inner" style="
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 4px;
             cursor: pointer;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(0,0,0,0.08);
-            border-radius: 6px;
-            padding: 0;
-            color: #505F79;
-            z-index: 2147483647;
-            line-height: 1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-          `
-          floatingBtn.onmouseenter = () => {
-            floatingBtn.style.color = '#0065FF'
-            floatingBtn.style.background = 'rgba(0,101,255,0.08)'
-            floatingBtn.style.borderColor = 'rgba(0,101,255,0.25)'
-            floatingBtn.style.boxShadow = '0 2px 8px rgba(0,101,255,0.15), 0 0 0 0.5px rgba(0,101,255,0.1)'
-          }
-          floatingBtn.onmouseleave = () => {
-            floatingBtn.style.color = '#505F79'
-            floatingBtn.style.background = 'rgba(255,255,255,0.92)'
-            floatingBtn.style.borderColor = 'rgba(0,0,0,0.08)'
-            floatingBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04)'
+            color: #8993A4;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+            transition: color 0.1s ease;
+          ">${copyIcon}</div>`
+          const inner = floatingEl.querySelector('.cjid-inner')
+
+          inner.addEventListener('mouseenter', () => {
+            inner.style.color = '#0C66E4'
+          })
+          inner.addEventListener('mouseleave', () => {
+            inner.style.color = '#8993A4'
             hideButton()
-          }
-          floatingBtn.onclick = ($event) => {
+          })
+          inner.addEventListener('click', ($event) => {
             $event.stopPropagation()
             $event.preventDefault()
             copyToClipboard(jiraId)
-            floatingBtn.innerHTML = checkIcon
-            floatingBtn.style.color = '#36B37E'
-            floatingBtn.style.background = 'rgba(54,179,126,0.08)'
-            floatingBtn.style.borderColor = 'rgba(54,179,126,0.25)'
-            floatingBtn.style.boxShadow = '0 2px 8px rgba(54,179,126,0.15), 0 0 0 0.5px rgba(54,179,126,0.1)'
+            inner.style.color = '#22A06B'
+            inner.innerHTML = checkIcon
             setTimeout(() => {
-              if (floatingBtn) {
-                floatingBtn.innerHTML = copyIcon
-                floatingBtn.style.color = '#505F79'
-                floatingBtn.style.background = 'rgba(255,255,255,0.92)'
-                floatingBtn.style.borderColor = 'rgba(0,0,0,0.08)'
-                floatingBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04)'
+              if (inner) {
+                inner.innerHTML = copyIcon
+                inner.style.color = '#8993A4'
               }
             }, 600)
-          }
+          })
         }
+        document.body.appendChild(floatingEl)
         const rect = link.getBoundingClientRect()
-        floatingBtn.style.top = (rect.top + (rect.height / 2) - 12) + 'px'
-        floatingBtn.style.left = (rect.right + 4) + 'px'
-        document.body.appendChild(floatingBtn)
+        floatingEl.style.top = (rect.top - 14) + 'px'
+        floatingEl.style.left = (rect.right - 6) + 'px'
         requestAnimationFrame(() => {
-          if (floatingBtn) {
-            floatingBtn.style.opacity = '1'
-            floatingBtn.style.transform = 'scale(1)'
-          }
+          if (floatingEl) floatingEl.style.opacity = '1'
         })
       }
 
       const hideButton = () => {
-        if (floatingBtn && floatingBtn.parentNode) {
-          floatingBtn.style.opacity = '0'
-          floatingBtn.style.transform = 'scale(0.8)'
-          const btn = floatingBtn
+        if (floatingEl && floatingEl.parentNode && !hiding) {
+          hiding = true
+          floatingEl.style.opacity = '0'
+          const el = floatingEl
           setTimeout(() => {
-            if (btn.parentNode) btn.parentNode.removeChild(btn)
-          }, 150)
+            if (el.parentNode) el.parentNode.removeChild(el)
+            hiding = false
+          }, 120)
         }
       }
 
       link.addEventListener('mouseenter', showButton)
       link.addEventListener('mouseleave', () => {
         setTimeout(() => {
-          if (floatingBtn && !floatingBtn.matches(':hover')) hideButton()
-        }, 50)
+          if (floatingEl && !floatingEl.matches(':hover')) hideButton()
+        }, 60)
       })
 
       link.dataset.copyJiraId = true
