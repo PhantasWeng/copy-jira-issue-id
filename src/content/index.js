@@ -15,7 +15,8 @@ function copyToClipboard(textToCopy) {
 
 console.log('%c[Copy Jira Id] %cInitialized', 'color: #F29D38', 'color: #9AE007')
 
-const copyIcon = '<svg viewBox="64 64 896 896" data-icon="copy" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false" class=""><path d="M832 64H296c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h496v688c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8V96c0-17.7-14.3-32-32-32zM704 192H192c-17.7 0-32 14.3-32 32v530.7c0 8.5 3.4 16.6 9.4 22.6l173.3 173.3c2.2 2.2 4.7 4 7.4 5.5v1.9h4.2c3.5 1.3 7.2 2 11 2H704c17.7 0 32-14.3 32-32V224c0-17.7-14.3-32-32-32zM350 856.2L263.9 770H350v86.2zM664 888H414V746c0-22.1-17.9-40-40-40H232V264h432v624z"></path></svg>'
+const copyIcon = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+const checkIcon = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
 
 function inspectLink() {
   const aLinkList = document.querySelectorAll('a:not([data-testid*="notification"])')
@@ -23,39 +24,98 @@ function inspectLink() {
     const regex = /browse\/([a-zA-Z]+-\d+)/
     const jiraId = regex.exec(link.href)?.[1]
     if (!link.dataset.copyJiraId && link?.href?.includes('browse') && jiraId) {
-      // if (!link.className.includes('hover-copy-btn')) {
-      //   link.className = link.className + ' hover-copy-btn'
-      // }
-      const button = document.createElement('button')
-      button.innerHTML = copyIcon
-      button.className = 'copy-jira-id-button'
-      button.style.cursor = 'pointer'
-      button.style.backgroundColor = 'transparent'
-      button.style.border = 'none'
-      button.style.fontSize = '12px'
-      button.style.padding = '2px 6px'
-      button.style.color = '#888'
-      button.style.transition = 'color 0.6s ease'
-      // button.style.display = 'none'
+      let floatingBtn = null
 
-      button.onmouseenter = () => {
-        button.style.color = '#179EEF'
+      const showButton = () => {
+        if (!floatingBtn) {
+          floatingBtn = document.createElement('button')
+          floatingBtn.innerHTML = copyIcon
+          floatingBtn.style.cssText = `
+            position: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 6px;
+            padding: 0;
+            color: #505F79;
+            z-index: 2147483647;
+            line-height: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+          `
+          floatingBtn.onmouseenter = () => {
+            floatingBtn.style.color = '#0065FF'
+            floatingBtn.style.background = 'rgba(0,101,255,0.08)'
+            floatingBtn.style.borderColor = 'rgba(0,101,255,0.25)'
+            floatingBtn.style.boxShadow = '0 2px 8px rgba(0,101,255,0.15), 0 0 0 0.5px rgba(0,101,255,0.1)'
+          }
+          floatingBtn.onmouseleave = () => {
+            floatingBtn.style.color = '#505F79'
+            floatingBtn.style.background = 'rgba(255,255,255,0.92)'
+            floatingBtn.style.borderColor = 'rgba(0,0,0,0.08)'
+            floatingBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04)'
+            hideButton()
+          }
+          floatingBtn.onclick = ($event) => {
+            $event.stopPropagation()
+            $event.preventDefault()
+            copyToClipboard(jiraId)
+            floatingBtn.innerHTML = checkIcon
+            floatingBtn.style.color = '#36B37E'
+            floatingBtn.style.background = 'rgba(54,179,126,0.08)'
+            floatingBtn.style.borderColor = 'rgba(54,179,126,0.25)'
+            floatingBtn.style.boxShadow = '0 2px 8px rgba(54,179,126,0.15), 0 0 0 0.5px rgba(54,179,126,0.1)'
+            setTimeout(() => {
+              if (floatingBtn) {
+                floatingBtn.innerHTML = copyIcon
+                floatingBtn.style.color = '#505F79'
+                floatingBtn.style.background = 'rgba(255,255,255,0.92)'
+                floatingBtn.style.borderColor = 'rgba(0,0,0,0.08)'
+                floatingBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.04)'
+              }
+            }, 600)
+          }
+        }
+        const rect = link.getBoundingClientRect()
+        floatingBtn.style.top = (rect.top + (rect.height / 2) - 12) + 'px'
+        floatingBtn.style.left = (rect.right + 4) + 'px'
+        document.body.appendChild(floatingBtn)
+        requestAnimationFrame(() => {
+          if (floatingBtn) {
+            floatingBtn.style.opacity = '1'
+            floatingBtn.style.transform = 'scale(1)'
+          }
+        })
       }
-      button.onmouseleave = () => {
-        button.style.color = '#888'
+
+      const hideButton = () => {
+        if (floatingBtn && floatingBtn.parentNode) {
+          floatingBtn.style.opacity = '0'
+          floatingBtn.style.transform = 'scale(0.8)'
+          const btn = floatingBtn
+          setTimeout(() => {
+            if (btn.parentNode) btn.parentNode.removeChild(btn)
+          }, 150)
+        }
       }
-      button.onclick = ($event) => {
-        $event.stopPropagation()
-        $event.preventDefault()
-        copyToClipboard(jiraId)
-        button.innerHTML = '✔︎'
+
+      link.addEventListener('mouseenter', showButton)
+      link.addEventListener('mouseleave', () => {
         setTimeout(() => {
-          button.innerHTML = copyIcon
-        }, 600)
-      }
+          if (floatingBtn && !floatingBtn.matches(':hover')) hideButton()
+        }, 50)
+      })
 
       link.dataset.copyJiraId = true
-      link.after(button)
     }
   }
 }

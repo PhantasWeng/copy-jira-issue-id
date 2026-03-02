@@ -1,108 +1,167 @@
+/* ── Base ── */
 .container {
   width: 340px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 13px;
   color: #172B4D;
+  background: #fff;
 }
 
+/* ── Header ── */
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
-  border-bottom: 1px solid #DFE1E6;
+  padding: 12px 14px;
+  border-bottom: 1px solid #EBECF0;
 }
 
 .header-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: #172B4D;
+  letter-spacing: -0.01em;
 }
 
 .settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   background: none;
-  border: none;
-  font-size: 16px;
-  padding: 2px 4px;
-  color: #5E6C84;
-  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0;
+  color: #626F86;
+  transition: all 0.15s ease;
 }
 
 .settings-btn:hover {
   color: #172B4D;
+  background: #F1F2F4;
+  border-color: #DCDFE4;
 }
 
+.settings-btn svg {
+  display: block;
+}
+
+/* ── List ── */
 .id-list {
   list-style: none;
   margin: 0;
-  padding: 0;
-  max-height: 240px;
+  padding: 4px 0;
+  max-height: 320px;
   overflow-y: auto;
 }
 
+.id-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.id-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.id-list::-webkit-scrollbar-thumb {
+  background: #C1C7D0;
+  border-radius: 3px;
+}
+
+/* ── Row ── */
 .id-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid #F4F5F7;
+  padding: 6px 14px;
+  gap: 8px;
+  transition: background 0.1s ease;
+}
+
+.id-row:hover {
+  background: #F7F8F9;
 }
 
 .id-info {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
-}
-
-.id-row:last-child {
-  border-bottom: none;
+  flex: 1;
 }
 
 .id-text {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-family: 'SF Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 12px;
+  font-weight: 500;
   color: #172B4D;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* ── Copy button (icon) ── */
 .copy-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
-  background-color: #0077FF;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  padding: 3px 8px;
-  font-size: 11px;
-  white-space: nowrap;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0;
+  color: #626F86;
   flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  color: #0C66E4;
+  background: #E9F2FF;
+  border-color: #B8D4FF;
 }
 
 .copy-btn--success {
-  background-color: #36B37E;
+  color: #216E4E !important;
+  background: #DCFFF1 !important;
+  border-color: #BAF3DB !important;
 }
 
+.copy-btn svg {
+  display: block;
+}
+
+/* ── Type badge ── */
 .type-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-size: 10px;
   font-weight: 600;
-  padding: 1px 6px;
+  padding: 2px 6px;
   border-radius: 3px;
   color: #fff;
   white-space: nowrap;
   flex-shrink: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
 }
 
-.type-badge--epic        { background-color: #8777D9; }
-.type-badge--story       { background-color: #36B37E; }
-.type-badge--bug         { background-color: #FF5630; }
-.type-badge--task        { background-color: #0065FF; }
-.type-badge--sub-task    { background-color: #00B8D9; }
+.type-badge--epic        { background-color: #8270DB; }
+.type-badge--story       { background-color: #22A06B; }
+.type-badge--bug         { background-color: #E34935; }
+.type-badge--task        { background-color: #0C66E4; }
+.type-badge--sub-task    { background-color: #0094D4; }
 .type-badge--unknown     { background-color: #8993A4; }
 
+/* ── Empty state ── */
 .empty-state {
-  padding: 20px 12px;
+  padding: 32px 14px;
   text-align: center;
-  color: #7A869A;
+  color: #8993A4;
   font-size: 12px;
+  line-height: 1.5;
 }
