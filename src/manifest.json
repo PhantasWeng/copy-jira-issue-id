@@ -1,13 +1,13 @@
 {
+  "manifest_version": 3,
   "name": "Copy Jira issue ID",
   "background": {
-    "scripts": [
-      "background/index.js"
-    ]
+    "service_worker": "background/index.js",
+    "type": "module"
   },
   "icons": {
-		"128": "img/icon128.png"
-	},
+    "128": "img/icon128.png"
+  },
   "content_scripts": [
     {
       "js": [
@@ -19,13 +19,16 @@
     }
   ],
   "permissions": [
-    "*://*.atlassian.net/*",
-		"contextMenus",
-		"tabs",
-		"clipboardRead",
-		"clipboardWrite"
-	],
-  "browser_action": {
+    "contextMenus",
+    "tabs",
+    "scripting",
+    "clipboardRead",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "*://*.atlassian.net/*"
+  ],
+  "action": {
     "default_popup": "pages/popup/index.html"
   }
 }

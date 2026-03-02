@@ -1,8 +1,8 @@
-import { clipboard } from '@extend-chrome/clipboard'
-
-function copyToClipboard(textToCopy) {
-  clipboard.writeText(textToCopy).then((text) => {
-    console.log('clipboard contents', text)
+async function copyToClipboard(tabId, textToCopy) {
+  chrome.scripting.executeScript({
+    target: { tabId },
+    func: (text) => navigator.clipboard.writeText(text),
+    args: [textToCopy]
   })
 }
 
@@ -17,11 +17,11 @@ async function copyIssueId() {
       if (isJira.test(url)) {
         if (regex1.test(url)) {
           console.debug('regex1', regex1.exec(url)[1])
-          return copyToClipboard(regex1.exec(url)[1]);
+          return copyToClipboard(tab.id, regex1.exec(url)[1]);
         }
         if (regex2.test(url)) {
           console.debug('regex2', regex2.exec(url)[1])
-          return copyToClipboard(regex2.exec(url)[1]);
+          return copyToClipboard(tab.id, regex2.exec(url)[1]);
         }
       }
     }
@@ -35,7 +35,9 @@ chrome.runtime.onInstalled.addListener(() => {
     title: 'Jira Issue ID',
     documentUrlPatterns: ["*://*.atlassian.net/*"]
   });
-  chrome.contextMenus.onClicked.addListener(() => {
-    copyIssueId()
-  });
+})
+
+// MV3: listeners must be registered at top level, not inside onInstalled
+chrome.contextMenus.onClicked.addListener(() => {
+  copyIssueId()
 })

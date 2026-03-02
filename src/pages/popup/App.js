@@ -1,5 +1,4 @@
 import React from 'react'
-import { clipboard } from '@extend-chrome/clipboard'
 import './App.css'
 export default class App extends React.Component {
   constructor(props) {
@@ -43,7 +42,7 @@ export default class App extends React.Component {
     this.setState({
       isCopying: true
     })
-    clipboard.writeText(this.state.issueId).then((text) => {
+    navigator.clipboard.writeText(this.state.issueId).then(() => {
       this.setState({
         isCopying: false,
         isSuccess: true
@@ -54,7 +53,6 @@ export default class App extends React.Component {
           isSuccess: false
         })
       }, 600)
-      console.log('clipboard contents', text)
     })
   }
 
