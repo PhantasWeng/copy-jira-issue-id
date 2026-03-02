@@ -1,6 +1,6 @@
 {
   "name": "copy-jira-issue-id",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "private": true,
   "description": "Lets you copy Jira issue ID.",
   "keywords": [
@@ -17,6 +17,7 @@
   "scripts": {
     "build": "rollup -c",
     "release": "cross-env NODE_ENV=production rollup -c",
+    "publish:ext": "bash scripts/publish.sh",
     "start": "rollup -c -w",
     "test": "jest"
   },

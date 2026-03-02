@@ -33,5 +33,6 @@
   "options_ui": {
     "page": "pages/options/index.html",
     "open_in_tab": true
-  }
+  },
+  "version": "1.0.0"
 }

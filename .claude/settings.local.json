@@ -5,7 +5,8 @@
       "Bash(npx pnpm:*)",
       "Bash(npm run:*)",
       "WebSearch",
-      "WebFetch(domain:developer.atlassian.com)"
+      "WebFetch(domain:developer.atlassian.com)",
+      "Bash(ls:*)"
     ]
   }
 }
