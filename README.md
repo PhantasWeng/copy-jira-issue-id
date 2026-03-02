@@ -2,15 +2,33 @@
 
 <img src="src/img/icon128.png" width="64" alt="Copy Jira Issue ID icon" />
 
-A Chrome extension that lets you copy Jira issue IDs with a single click.
+A Chrome extension that lets you copy Jira issue IDs with a single click. Works on all `*.atlassian.net` pages.
 
 ## Features
 
-Three ways to copy a Jira issue ID:
+### Inline Copy Button
 
-1. **Inline copy button** — A copy button appears next to every Jira issue link on the page. Click it to copy, a checkmark confirms success.
-2. **Extension popup** — Click the extension icon in the toolbar to see the current issue ID and copy it with the "複製ID" button.
-3. **Right-click context menu** — Right-click anywhere on a Jira issue page and select "Jira Issue ID" to copy.
+A small copy button appears when you hover over any Jira issue link on the page. Click it to instantly copy the issue ID to your clipboard.
+
+**On navigation breadcrumbs:**
+
+<img src="src/img/nav-button.png" width="360" alt="Copy button on navigation breadcrumbs" />
+
+**On board cards:**
+
+<img src="src/img/card-button.png" width="360" alt="Copy button on board cards" />
+
+### Popup Window
+
+Click the extension icon in the toolbar to see all Jira issue IDs found on the current page. Each ID is shown with its issue type (Epic, Story, Bug, Sub-task, Task, etc.). Click the copy icon on any row to copy that ID.
+
+<img src="src/img/popup-window.png" width="320" alt="Popup window showing issue IDs with type badges" />
+
+### Settings
+
+Choose your preferred language (English / Traditional Chinese) from the settings page.
+
+<img src="src/img/settings.png" width="400" alt="Settings page with language selection" />
 
 ## Install
 
