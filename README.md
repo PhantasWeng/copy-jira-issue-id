@@ -1,6 +1,8 @@
 # Copy Jira Issue ID
 
-<img src="src/img/icon128.png" width="64" alt="Copy Jira Issue ID icon" />
+<img src="documents/extension-cover.jpg" width="720" alt="Copy Jira Issue ID — cover" />
+
+[繁體中文](./documents/README.zh-TW.md) | English
 
 A Chrome extension that lets you copy Jira issue IDs with a single click. Works on all `*.atlassian.net` pages.
 
@@ -61,7 +63,8 @@ pnpm install
 | Command | Description |
 |---|---|
 | `pnpm build` | Development build |
-| `pnpm release` | Production build + zip output to `releases/` |
+| `pnpm release` | Production build |
+| `pnpm publish:ext` | Interactive version bump + production build + zip to `releases/` |
 | `pnpm start` | Watch mode with auto-reload |
 | `pnpm test` | Run tests |
 
