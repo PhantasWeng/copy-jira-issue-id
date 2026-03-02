@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm build:*)",
+      "Bash(npx pnpm:*)",
+      "Bash(npm run:*)",
+      "WebSearch",
+      "WebFetch(domain:developer.atlassian.com)"
+    ]
+  }
+}

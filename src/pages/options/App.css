@@ -1,0 +1,73 @@
+.options-container {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.options-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #172B4D;
+}
+
+.options-section {
+  margin-bottom: 24px;
+}
+
+.options-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5E6C84;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.options-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.options-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #172B4D;
+}
+
+.options-radio-label input[type="radio"] {
+  cursor: pointer;
+}
+
+.options-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.save-btn {
+  cursor: pointer;
+  background-color: #0077FF;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.save-btn:hover {
+  background-color: #0066DD;
+}
+
+.saved-feedback {
+  font-size: 13px;
+  color: #00875A;
+  font-weight: 500;
+}

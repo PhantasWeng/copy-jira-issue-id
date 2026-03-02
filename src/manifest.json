@@ -19,16 +19,19 @@
     }
   ],
   "permissions": [
-    "contextMenus",
     "tabs",
-    "scripting",
     "clipboardRead",
-    "clipboardWrite"
+    "clipboardWrite",
+    "storage"
   ],
   "host_permissions": [
     "*://*.atlassian.net/*"
   ],
   "action": {
     "default_popup": "pages/popup/index.html"
+  },
+  "options_ui": {
+    "page": "pages/options/index.html",
+    "open_in_tab": true
   }
 }

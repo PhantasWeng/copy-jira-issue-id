@@ -67,3 +67,37 @@ const scan = setInterval(() => {
 window.onbeforeunload = function(){
   clearInterval(scan)
 }
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'getJiraIds') {
+    const regex = /browse\/([a-zA-Z]+-\d+)/
+    const seen = new Set()
+    for (const link of document.querySelectorAll('a')) {
+      const match = regex.exec(link.href)
+      if (match) seen.add(match[1].toUpperCase())
+    }
+    const ids = Array.from(seen)
+    if (ids.length === 0) {
+      sendResponse({ ids: [] })
+      return true
+    }
+    const jql = `key in (${ids.join(',')})`
+    const url = `/rest/api/3/search/jql?jql=${encodeURIComponent(jql)}&fields=issuetype&maxResults=100`
+    fetch(url, { credentials: 'include' })
+      .then(res => {
+        if (!res.ok) throw new Error(`Jira API ${res.status}`)
+        return res.json()
+      })
+      .then(data => {
+        const typeMap = {}
+        for (const issue of (data.issues || [])) {
+          typeMap[issue.key] = issue.fields?.issuetype?.name || null
+        }
+        sendResponse({ ids: ids.map(id => ({ id, type: typeMap[id] || null })) })
+      })
+      .catch(() => {
+        sendResponse({ ids: ids.map(id => ({ id, type: null })) })
+      })
+  }
+  return true
+})

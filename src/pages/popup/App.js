@@ -1,96 +1,101 @@
 import React from 'react'
+import { translations, DEFAULT_LANGUAGE } from '../../utils/translations'
 import './App.css'
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       isJira: null,
-      url: null,
-      issueId: null,
-      isCopying: false,
-      isSuccess: false
+      ids: [],
+      copiedId: null,
+      language: DEFAULT_LANGUAGE,
+      loaded: false,
     }
   }
 
   componentDidMount = () => {
-    const isJira = /atlassian\.net/
-    const regex1 = /atlassian\.net\/browse\/([a-zA-Z]+-\d+)/
-    const regex2 = /atlassian\.net\/.*selectedIssue=([a-zA-Z]+-\d+)/
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const url = tabs[0].url
-      this.setState({
-        isJira: isJira.test(url),
-        url: url
+    chrome.storage.sync.get('language', (result) => {
+      const language = result.language || DEFAULT_LANGUAGE
+      this.setState({ language })
+
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const url = tabs[0].url
+        const isJira = /atlassian\.net/.test(url)
+        if (!isJira) {
+          this.setState({ isJira: false, loaded: true })
+          return
+        }
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'getJiraIds' }, (response) => {
+          if (chrome.runtime.lastError || !response) {
+            this.setState({ isJira: true, ids: [], loaded: true })
+            return
+          }
+          this.setState({ isJira: true, ids: response.ids || [], loaded: true })
+        })
       })
-      if (isJira.test(url)) {
-        if (regex1.test(url)) {
-          console.debug('regex1', regex1.exec(url)[1])
-          this.setState({
-            issueId: regex1.exec(url)[1]
-          })
-        }
-        if (regex2.test(url)) {
-          console.debug('regex2', regex2.exec(url)[1])
-          this.setState({
-            issueId: regex2.exec(url)[1]
-          })
-        }
-      }
     })
   }
-  handleClick = () => {
-    this.setState({
-      isCopying: true
-    })
-    navigator.clipboard.writeText(this.state.issueId).then(() => {
-      this.setState({
-        isCopying: false,
-        isSuccess: true
-      })
-      const _this = this
+
+  typeBadgeClass = (type) => {
+    return 'type-badge type-badge--' + (type || 'unknown').toLowerCase().replace(/[\s-]+/g, '-')
+  }
+
+  handleCopy = (id) => {
+    navigator.clipboard.writeText(id).then(() => {
+      this.setState({ copiedId: id })
       setTimeout(() => {
-        _this.setState({
-          isSuccess: false
-        })
+        this.setState({ copiedId: null })
       }, 600)
     })
   }
 
+  handleOpenSettings = () => {
+    chrome.runtime.openOptionsPage()
+  }
+
   render() {
-    const CopyStatus = () => {
-      if (this.state.isSuccess) {
-        return <span style={{ color: 'green', margin: '0 4px' }}>Success</span>
-      } else {
-        return null
-      }
-    }
-    const IsJiraPage = (props) => {
-      return <div>
-        <p>在 Jira 的 Issue 頁面上，點選右鍵即可複製</p>
-        <div>
-          <span style={{ marginLeft: '8px', fontSize: '12px' }}>{ this.state.issueId }</span>
-          <button className='copy-btn' onClick={this.handleClick}>複製ID</button>
-          <CopyStatus />
-        </div>
-      </div>
-    }
-    function NotJiraPage (props) {
-      return <div>這不是一個 Jira Issue 的頁面</div>
-    }
+    const t = translations[this.state.language]
+    const { isJira, ids, copiedId, loaded } = this.state
+
     const ContentBlock = () => {
-      if (this.state.isJira) {
-        return <IsJiraPage />
-      } else {
-        return <NotJiraPage />
-      }
+      if (!loaded) return null
+      if (!isJira) return <div className="empty-state">{t.notJiraPage}</div>
+      if (ids.length === 0) return <div className="empty-state">{t.noIdsFound}</div>
+      return (
+        <ul className="id-list">
+          {ids.map(({ id, type }) => (
+            <li key={id} className="id-row">
+              <span className="id-info">
+                <span className={this.typeBadgeClass(type)}>{type || '?'}</span>
+                <span className="id-text">{id}</span>
+              </span>
+              <button
+                className={`copy-btn${copiedId === id ? ' copy-btn--success' : ''}`}
+                onClick={() => this.handleCopy(id)}
+              >
+                {copiedId === id ? '✓' : t.copyButton}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )
     }
+
     return (
-      <div style={{ minWidth: '400px' }}>
-      <div>
-        <h1 style={{ fontSize: '14px' }}>Jira Issue's ID</h1>
+      <div className="container">
+        <div className="header">
+          <span className="header-title">{t.title}</span>
+          <button
+            className="settings-btn"
+            onClick={this.handleOpenSettings}
+            title={t.settings}
+          >
+            ⚙
+          </button>
+        </div>
         <ContentBlock />
       </div>
-    </div>
     )
   }
 }

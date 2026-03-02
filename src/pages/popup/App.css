@@ -1,10 +1,108 @@
+.container {
+  width: 340px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #172B4D;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #DFE1E6;
+}
+
+.header-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #172B4D;
+}
+
+.settings-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 2px 4px;
+  color: #5E6C84;
+  line-height: 1;
+}
+
+.settings-btn:hover {
+  color: #172B4D;
+}
+
+.id-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.id-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #F4F5F7;
+}
+
+.id-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.id-row:last-child {
+  border-bottom: none;
+}
+
+.id-text {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  color: #172B4D;
+}
+
 .copy-btn {
   cursor: pointer;
   background-color: #0077FF;
   color: #fff;
   border: none;
   border-radius: 3px;
-  padding: 4px 8px;
+  padding: 3px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.copy-btn--success {
+  background-color: #36B37E;
+}
+
+.type-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.type-badge--epic        { background-color: #8777D9; }
+.type-badge--story       { background-color: #36B37E; }
+.type-badge--bug         { background-color: #FF5630; }
+.type-badge--task        { background-color: #0065FF; }
+.type-badge--sub-task    { background-color: #00B8D9; }
+.type-badge--unknown     { background-color: #8993A4; }
+
+.empty-state {
+  padding: 20px 12px;
+  text-align: center;
+  color: #7A869A;
   font-size: 12px;
-  transform: scale(0.85);
 }
