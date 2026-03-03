@@ -16,11 +16,37 @@
   border-bottom: 1px solid #EBECF0;
 }
 
+.header-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.header-logo {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.header-logo-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
 .header-title {
   font-size: 14px;
   font-weight: 700;
   color: #172B4D;
   letter-spacing: -0.01em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .settings-btn {

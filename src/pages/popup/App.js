@@ -77,6 +77,10 @@ export default class App extends React.Component {
   render() {
     const t = translations[this.state.language]
     const { isJira, ids, copiedId, loaded } = this.state
+    const extensionIcon =
+      typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL
+        ? chrome.runtime.getURL('img/icon128.png')
+        : '../../img/icon128.png'
 
     const ContentBlock = () => {
       if (!loaded) return null
@@ -106,7 +110,12 @@ export default class App extends React.Component {
     return (
       <div className="container">
         <div className="header">
-          <span className="header-title">{t.title}</span>
+          <span className="header-title-wrap">
+            <span className="header-logo" aria-hidden="true">
+              <img src={extensionIcon} alt="" className="header-logo-image" />
+            </span>
+            <span className="header-title">{t.title}</span>
+          </span>
           <button
             className="settings-btn"
             onClick={this.handleOpenSettings}
