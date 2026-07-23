@@ -1,0 +1,58 @@
+name: Release
+
+# 當推送 v 開頭的 tag（例如 v1.1.0）時觸發，自動 build 並發佈 GitHub Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify tag matches manifest version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          MANIFEST_VERSION="$(node -p "require('./src/manifest.json').version")"
+          echo "Tag version:      $TAG_VERSION"
+          echo "Manifest version: $MANIFEST_VERSION"
+          if [ "$TAG_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match src/manifest.json version ${MANIFEST_VERSION}. Bump the version before tagging."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build production bundle
+        run: npm run release
+
+      - name: Package extension zip
+        id: package
+        run: |
+          ZIP_NAME="copy-jira-issue-id-${GITHUB_REF_NAME}.zip"
+          cd dist
+          zip -r "../${ZIP_NAME}" . -x '*.DS_Store'
+          cd ..
+          echo "zip_name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
+          echo "Packaged ${ZIP_NAME}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "${{ steps.package.outputs.zip_name }}" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes

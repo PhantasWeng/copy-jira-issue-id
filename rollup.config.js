@@ -7,7 +7,6 @@ import resolve from '@rollup/plugin-node-resolve'
 
 import { chromeExtension, simpleReloader } from 'rollup-plugin-chrome-extension'
 import { emptyDir } from 'rollup-plugin-empty-dir'
-import zip from 'rollup-plugin-zip'
 import postcss from 'rollup-plugin-postcss'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -41,7 +40,5 @@ export default {
     commonjs(),
     // Empties the output dir before a new build
     emptyDir(),
-    // Outputs a zip file in ./releases
-    isProduction && zip({ dir: 'releases' }),
   ],
 }
