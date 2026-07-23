@@ -18,6 +18,22 @@ console.log('%c[Copy Jira Id] %cInitialized', 'color: #F29D38', 'color: #9AE007'
 const copyIcon = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
 const checkIcon = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
 
+// Jira 原生 tooltip（Atlaskit Tooltip，role="tooltip"）在 hover breadcrumb 等連結時會出現在
+// 連結正上方，正好蓋住我們定位在連結上方的浮動複製按鈕。複製按鈕顯示期間先把原生 tooltip
+// 藏起來，離開時再恢復，避免互相干擾。
+const TOOLTIP_SUPPRESS_CLASS = 'cjid-suppress-tooltip'
+function ensureTooltipStyle() {
+  if (document.getElementById('cjid-tooltip-style')) return
+  const style = document.createElement('style')
+  style.id = 'cjid-tooltip-style'
+  style.textContent = `html.${TOOLTIP_SUPPRESS_CLASS} [role="tooltip"]{display:none !important;}`
+  ;(document.head || document.documentElement).appendChild(style)
+}
+function setTooltipSuppressed(suppressed) {
+  ensureTooltipStyle()
+  document.documentElement.classList.toggle(TOOLTIP_SUPPRESS_CLASS, suppressed)
+}
+
 function inspectLink() {
   const aLinkList = document.querySelectorAll('a:not([data-testid*="notification"]):not([data-testid*="permalink"])')
   for (const link of aLinkList) {
@@ -29,6 +45,7 @@ function inspectLink() {
 
       const showButton = () => {
         hiding = false
+        setTooltipSuppressed(true)
         if (!floatingEl) {
           floatingEl = document.createElement('div')
           floatingEl.style.cssText = `
@@ -84,6 +101,7 @@ function inspectLink() {
       }
 
       const hideButton = () => {
+        setTooltipSuppressed(false)
         if (floatingEl && floatingEl.parentNode && !hiding) {
           hiding = true
           floatingEl.style.opacity = '0'
